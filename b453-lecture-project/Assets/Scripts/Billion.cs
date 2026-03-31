@@ -3,23 +3,35 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Billion : MonoBehaviour
 {
+    // constant variables
+    private Rigidbody2D rb;
+    private Flag targetFlag;
+    public SpriteRenderer sr;
+    public Sprite blueBillion;
+    public Sprite yellowBillion;
+    public Sprite redBillion;
+    public Sprite greenBillion;
+    public Team team;
+    public LayerMask billionLayer;
+
+    // movement variables
     public float moveSpeed = 3f;
     public float separationRadius = 0.5f;
     public float separationForce = 5f;
-    public LayerMask billionLayer;
-    public SpriteRenderer sr;
-    public Team team;
-
-    private Rigidbody2D rb;
+    public float maxSpeed = 5f;
+    public float acceleration = 10f;
+    public float decelerationRadius = 1.5f;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    void FixedUpdate()
+    void Update()
     {
         ApplySeparation();
+        UpdateTarget();
+        MoveTowardFlag();
     }
 
     void ApplySeparation()
@@ -51,21 +63,49 @@ public class Billion : MonoBehaviour
         rb.linearVelocity = direction.normalized * .1f;
     }
 
-    public void SetColor()
+    void UpdateTarget()
+    {
+        targetFlag = FlagManager.Instance.GetNearestFlag(transform.position, team);
+    }
+
+    void MoveTowardFlag()
+    {
+        if (targetFlag == null) return;
+
+        Vector2 toTarget = (Vector2)targetFlag.transform.position - rb.position;
+        float distance = toTarget.magnitude;
+
+        if (distance < 0.05f) return;
+
+        Vector2 desiredDirection = toTarget.normalized;
+
+        // Slow down when close
+        float speedFactor = Mathf.Clamp01(distance / decelerationRadius);
+
+        float targetSpeed = maxSpeed * speedFactor;
+
+        Vector2 desiredVelocity = desiredDirection * targetSpeed;
+
+        Vector2 steering = desiredVelocity - rb.linearVelocity;
+
+        rb.AddForce(steering * acceleration);
+    }
+
+    public void SetSprite()
     {
         switch (team)
         {
             case Team.blue:
-                sr.color = Color.blue;
+                sr.sprite = blueBillion;
                 break;
             case Team.yellow:
-                sr.color = Color.yellow;
+                sr.sprite = yellowBillion;
                 break;
             case Team.red:
-                sr.color = Color.red;
+                sr.sprite = redBillion;
                 break;
             case Team.green:
-                sr.color = Color.green;
+                sr.sprite = greenBillion;
                 break;
         }
     }

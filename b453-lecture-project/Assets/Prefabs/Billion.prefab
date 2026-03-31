@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3.9613254, y: 0.47689915, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: 759291245
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: -5905639833428164242, guid: fc2d0740e24d5e843b5ff4c13c850384, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -152,7 +152,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.175
 --- !u!114 &2204450472336617848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,11 +165,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b7ca3316b05c0240af2a300b594f040, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
-  separationRadius: 0.1
-  separationForce: 0.15
+  sr: {fileID: 3564039140100288364}
+  blueBillion: {fileID: -5905639833428164242, guid: fc2d0740e24d5e843b5ff4c13c850384, type: 3}
+  yellowBillion: {fileID: -5905639833428164242, guid: e057f52ff0f63e145916603aa63b76ac, type: 3}
+  redBillion: {fileID: -5905639833428164242, guid: 9b06a0c2d6a46b34eb014daf0763f111, type: 3}
+  greenBillion: {fileID: -5905639833428164242, guid: 976b15c08175e604fa8b3937142ba72d, type: 3}
+  team: 0
   billionLayer:
     serializedVersion: 2
     m_Bits: 64
-  sr: {fileID: 3564039140100288364}
-  team: 0
+  moveSpeed: 1
+  separationRadius: 0.1
+  separationForce: 0.15
+  maxSpeed: 5
+  acceleration: 10
+  decelerationRadius: 1.5

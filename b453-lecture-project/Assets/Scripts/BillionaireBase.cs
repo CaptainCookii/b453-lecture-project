@@ -11,7 +11,12 @@ public class BillionaireBase : MonoBehaviour
 {
     public GameObject billionPrefab;
     public SpriteRenderer sr;
+    public Sprite redBase;
+    public Sprite blueBase;
+    public Sprite yellowBase;
+    public Sprite greenBase;
     public Team team;
+
     public float spawnInterval = 1f;
     public int maxBillions = 10;
     public float spawnRadius = 0.5f;
@@ -24,16 +29,16 @@ public class BillionaireBase : MonoBehaviour
         switch (team)
         {
             case Team.blue:
-                sr.color = Color.blue;
+                sr.sprite = blueBase;
                 break;
             case Team.yellow:
-                sr.color = Color.yellow;
+                sr.sprite = yellowBase;
                 break;
             case Team.red:
-                sr.color = Color.red;
+                sr.sprite = redBase;
                 break;
             case Team.green:
-                sr.color = Color.green;
+                sr.sprite = greenBase;
                 break;
         }
     }
@@ -61,9 +66,8 @@ public class BillionaireBase : MonoBehaviour
         Billion billion = newBillion.GetComponent<Billion>();
 
         billion.team = team;
-        billion.SetColor();
+        billion.SetSprite();
 
-        // Example direction (you can modify this logic)
         Vector2 direction = Random.insideUnitCircle.normalized;
         billion.SetDirection(direction);
 

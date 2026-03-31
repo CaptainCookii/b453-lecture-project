@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.27, y: 2.32, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -103,6 +103,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   billionPrefab: {fileID: 8432110182930177971, guid: b79926d42ca383f498f87216df762286, type: 3}
   sr: {fileID: 5672215441678173105}
+  redBase: {fileID: 774813160090618487, guid: e92ef9d152d019242ad4dd8f552cd79f, type: 3}
+  blueBase: {fileID: 3432717553192849819, guid: 03338cb83102ff148b50d021aa49d0c7, type: 3}
+  yellowBase: {fileID: -8082249768011107866, guid: 9c812ff22adbfa54495b217039efb571, type: 3}
+  greenBase: {fileID: 8512384730916251377, guid: c80a909a9480e3547a2b91f966f664eb, type: 3}
   team: 0
   spawnInterval: 1
   maxBillions: 10
