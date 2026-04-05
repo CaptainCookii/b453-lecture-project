@@ -1,3 +1,4 @@
+using UnityEditor.UI;
 using UnityEngine;
 
 public enum Team {
@@ -21,7 +22,7 @@ public class BillionaireBase : MonoBehaviour
     public int maxBillions = 10;
     public float spawnRadius = 0.5f;
 
-    private int currentCount;
+    public int currentCount;
     private float timer;
 
     void Start()
@@ -64,12 +65,11 @@ public class BillionaireBase : MonoBehaviour
         );
 
         Billion billion = newBillion.GetComponent<Billion>();
-
         billion.team = team;
         billion.SetSprite();
-
         Vector2 direction = Random.insideUnitCircle.normalized;
         billion.SetDirection(direction);
+        billion.owningBase = this;
 
         currentCount++;
     }

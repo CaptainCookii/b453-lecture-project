@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Billion : MonoBehaviour
 {
-    // constant variables
+    // reference variables
     private Rigidbody2D rb;
     private Flag targetFlag;
     public SpriteRenderer sr;
@@ -13,25 +13,67 @@ public class Billion : MonoBehaviour
     public Sprite greenBillion;
     public Team team;
     public LayerMask billionLayer;
+    public Transform innerCircle;
+    public BillionaireBase owningBase;
+    
+    //health variables
+    public int maxHealth = 10;
+    public int currentHealth = 10;
+    public float minInnerScale = 0.30f;
 
     // movement variables
-    public float moveSpeed = 3f;
-    public float separationRadius = 0.5f;
-    public float separationForce = 5f;
     public float maxSpeed = 5f;
     public float acceleration = 10f;
     public float decelerationRadius = 1.5f;
+    public float separationRadius = .5f;
+    public float separationForce = 5f;
 
-    void Awake()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        
     }
 
-    void Update()
+    private void FixedUpdate()
     {
         ApplySeparation();
-        UpdateTarget();
         MoveTowardFlag();
+    }
+
+    private void OnMouseOver()
+    {
+        if (Input.GetMouseButtonDown(2))
+        {
+            TakeDamage(1);
+        }
+    }
+
+    private void UpdateVisual()
+    {
+        if (innerCircle == null)
+            return;
+
+        float health01 = (float)currentHealth / maxHealth;
+        float scale = Mathf.Lerp(minInnerScale, 1f, health01);
+        innerCircle.localScale = new Vector3(scale, scale, 1f);
+    }
+
+    private void MoveTowardFlag()
+    {
+        targetFlag = FlagManager.Instance.GetNearestFlag(transform.position, team);
+        if (targetFlag == null) return;
+        
+
+        Vector2 toTarget = (Vector2)targetFlag.transform.position - rb.position;       
+        float distance = toTarget.magnitude;
+        if (distance < 0.05f) return;
+
+        Vector2 desiredDirection = toTarget.normalized;        
+        float speedFactor = Mathf.Clamp01(distance / decelerationRadius);       
+        float targetSpeed = maxSpeed * speedFactor;        
+        Vector2 desiredVelocity = desiredDirection * targetSpeed;       
+        Vector2 steering = desiredVelocity - rb.linearVelocity;        
+        rb.AddForce(steering * acceleration);
     }
 
     void ApplySeparation()
@@ -58,37 +100,26 @@ public class Billion : MonoBehaviour
         rb.AddForce(separationVector * separationForce);
     }
 
+    public void TakeDamage(int amount)
+    {
+        if (amount <= 0 || currentHealth <= 0)
+            return;
+
+        currentHealth -= amount;
+
+        if (currentHealth <= 0)
+        {
+            owningBase.currentCount--;
+            Destroy(gameObject);
+            return;
+        }
+
+        UpdateVisual();
+    }
+
     public void SetDirection(Vector2 direction)
     {
         rb.linearVelocity = direction.normalized * .1f;
-    }
-
-    void UpdateTarget()
-    {
-        targetFlag = FlagManager.Instance.GetNearestFlag(transform.position, team);
-    }
-
-    void MoveTowardFlag()
-    {
-        if (targetFlag == null) return;
-
-        Vector2 toTarget = (Vector2)targetFlag.transform.position - rb.position;
-        float distance = toTarget.magnitude;
-
-        if (distance < 0.05f) return;
-
-        Vector2 desiredDirection = toTarget.normalized;
-
-        // Slow down when close
-        float speedFactor = Mathf.Clamp01(distance / decelerationRadius);
-
-        float targetSpeed = maxSpeed * speedFactor;
-
-        Vector2 desiredVelocity = desiredDirection * targetSpeed;
-
-        Vector2 steering = desiredVelocity - rb.linearVelocity;
-
-        rb.AddForce(steering * acceleration);
     }
 
     public void SetSprite()
