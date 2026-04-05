@@ -19,6 +19,8 @@ public class Billion : MonoBehaviour
     public Team team;
     public LayerMask billionLayer;
     public Transform innerCircle;
+    public Transform turretMuzzle;
+    public GameObject bulletPrefab;
     public BillionaireBase owningBase;
     
     //health variables
@@ -27,12 +29,18 @@ public class Billion : MonoBehaviour
     public float minInnerScale = 0.30f;
 
     // movement variables
-    public float maxSpeed = 5f;
-    public float acceleration = 10f;
+    public float maxSpeed = 3f;
+    public float acceleration = 8f;
     public float decelerationRadius = 1.5f;
     public float separationRadius = .5f;
     public float separationForce = 5f;
-    public float rotationOffset = -90f;
+    public float rotationOffset = 0f;
+
+    //turret variables
+    public float fireInterval = 3f;
+    public float attackRange = 3f;
+    public int shotDamage = 1;
+    private float timer;
 
     private void Awake()
     {
@@ -52,27 +60,50 @@ public class Billion : MonoBehaviour
 
     private void FixedUpdate()
     {
+        
         ApplySeparation();
         MoveTowardFlag();
     }
 
-    private void LateUpdate()
+    private void Update()
     {
-        Billion nearestEnemy = FindNearestEnemy();
-        if (nearestEnemy == null)
+        timer += Time.deltaTime;
+        Billion target = FindNearestEnemy();
+        if (target == null)
             return;
 
-        Vector2 toTarget = nearestEnemy.transform.position - transform.position;
+        Vector2 toTarget = target.transform.position - transform.position;
         float angle = Mathf.Atan2(toTarget.y, toTarget.x) * Mathf.Rad2Deg;
-
         transform.rotation = Quaternion.Euler(0f, 0f, angle + rotationOffset);
+        
+        float distance = Vector2.Distance(transform.position, target.transform.position);
+        if (distance > attackRange || timer < fireInterval)
+            return;
+
+        Fire();
+        timer = 0f;
     }
 
-    private void OnMouseOver()
+    private void Fire()
     {
-        if (Input.GetMouseButtonDown(2))
+        if (turretMuzzle == null || bulletPrefab == null)
+            return;
+
+        
+        GameObject shotObj = Instantiate(
+            bulletPrefab,
+            turretMuzzle.position,
+            transform.rotation
+        );
+
+        Bullet shot = shotObj.GetComponent<Bullet>();
+        if (shot != null)
         {
-            TakeDamage(1);
+            shot.Initialize(
+                gameObject,
+                team,
+                shotDamage
+            );
         }
     }
 
