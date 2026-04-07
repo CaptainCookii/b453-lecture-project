@@ -4,22 +4,31 @@ using UnityEngine.InputSystem;
 
 public class Flag : MonoBehaviour
 {
+    // reference variables
+    public KeyCode key;
     public Team team;
+    private Camera cam;
     public SpriteRenderer sr;
     public Sprite blueFlag;
     public Sprite yellowFlag;
     public Sprite redFlag;
     public Sprite greenFlag;
-
-    public KeyCode key;
-
-    private Camera cam;
-
-    public bool dragging;
+    public GameObject linePrefab;
+    private LineRenderer lr;
+    private Vector3 mousePos;
 
     void Awake()
     {
         cam = Camera.main;
+
+        GameObject lineObj = Instantiate(
+            linePrefab,
+            new Vector3(0, 0, 0),
+            Quaternion.identity
+        );
+
+        lr = lineObj.GetComponent<LineRenderer>();
+        lr.enabled = false;
     }
 
     private void Start()
@@ -27,27 +36,25 @@ public class Flag : MonoBehaviour
         SetupTeam();
     }
 
-
-    void Update()
+    private void OnMouseDown()
     {
-        //Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-        //mousePos.z = 0;
-        //if (Input.GetKeyDown(key) && (mousePos == transform.position))
-        //{
-        //    dragging = true;
-        //}
-        //if (Input.GetKeyUp(key))
-        //{
-        //    transform.position = mousePos;
-        //    dragging = false;
-        //}
+        lr.enabled = true;
+        lr.positionCount = 2;
+        lr.SetPosition(0, mousePos);
+        lr.SetPosition(1, mousePos);
     }
 
-    private void OnMouseDrag() 
+    private void Update()
     {
-        Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0;
+        lr.SetPosition(1, mousePos);
+    }
+
+    private void OnMouseUp()
+    {
         transform.position = mousePos;
+        lr.enabled = false;
     }
 
     public void SetupTeam()
@@ -56,11 +63,15 @@ public class Flag : MonoBehaviour
         {
             case Team.yellow:
                 sr.sprite = yellowFlag;
-                key = KeyCode.Mouse1;
+                lr.startColor = Color.yellow;
+                lr.endColor = Color.yellow;
+                key = KeyCode.Mouse0;
                 break;
             case Team.green:
                 sr.sprite = greenFlag;
-                key = KeyCode.Mouse0;
+                lr.startColor = Color.green;
+                lr.endColor = Color.green;
+                key = KeyCode.Mouse1;
                 break;
         }
     }

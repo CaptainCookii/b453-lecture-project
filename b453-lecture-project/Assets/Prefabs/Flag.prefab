@@ -101,14 +101,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ceda945dcb031a1478089ca88a2ec28b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  key: 0
   team: 0
   sr: {fileID: 8589925286186356940}
   blueFlag: {fileID: -4011507039840530130, guid: 32765c49a3aa2e94bb7ab5c797f5cdcc, type: 3}
   yellowFlag: {fileID: 1196469081717521920, guid: 64a222db5995daf4f8c711fa990d7a23, type: 3}
   redFlag: {fileID: 7856308923325026766, guid: 84b6a7976454a894380e55373591af5b, type: 3}
   greenFlag: {fileID: 7988532127753490847, guid: d4437680d4d244c42b5ac350c4be20de, type: 3}
-  key: 0
-  dragging: 0
+  linePrefab: {fileID: 8540810731383523061, guid: ef360517991dfb6439cab4a36bb8b353, type: 3}
 --- !u!61 &-6998414507695115147
 BoxCollider2D:
   m_ObjectHideFlags: 0

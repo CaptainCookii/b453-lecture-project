@@ -113,7 +113,7 @@ MonoBehaviour:
   greenBase: {fileID: 8512384730916251377, guid: c80a909a9480e3547a2b91f966f664eb, type: 3}
   team: 0
   spawnInterval: 1
-  maxBillions: 10
+  maxBillions: 15
   spawnRadius: 0.5
   currentCount: 0
   rotationSpeed: 45
