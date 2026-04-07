@@ -29,7 +29,8 @@ Transform:
   m_LocalPosition: {x: 0.1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4253448422645177556}
   m_Father: {fileID: 3523266497530913251}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!212 &152834187286721881
@@ -87,6 +88,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1901313363003166693
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4253448422645177556}
+  m_Layer: 0
+  m_Name: Firepoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4253448422645177556
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1901313363003166693}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0.0029999942, y: 0.08200002, z: 0}
+  m_LocalScale: {x: 0.6666665, y: 0.6666665, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8874140575905877280}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7138303030254975372
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +388,7 @@ MonoBehaviour:
     m_Bits: 64
   team: 0
   innerCircle: {fileID: 349611978387244370}
-  turretMuzzle: {fileID: 8874140575905877280}
+  firePoint: {fileID: 4253448422645177556}
   bulletPrefab: {fileID: 8263341998464550209, guid: 3cfe8c4f275cb294788c709f1b3b703f, type: 3}
   maxHealth: 5
   currentHealth: 5
@@ -369,3 +401,5 @@ MonoBehaviour:
   fireInterval: 1.5
   attackRange: 3
   shotDamage: 1
+  projSpeed: 12
+  projMaxTravelDist: 7

@@ -78,7 +78,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 759291245
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -7336049532282260110, guid: a59c4bb8536760848aac94f596a50a06, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -183,5 +183,3 @@ MonoBehaviour:
   yellowBullet: {fileID: -7336049532282260110, guid: fef0670161b0ffe40a987b8471cfcfd7, type: 3}
   redBullet: {fileID: -7336049532282260110, guid: 90dc85d1c19b9214096734c77e6e9089, type: 3}
   greenBullet: {fileID: -7336049532282260110, guid: 4762d0a8e8f82e546bcdfd8b760f6271, type: 3}
-  speed: 10
-  maxTravelDistance: 6

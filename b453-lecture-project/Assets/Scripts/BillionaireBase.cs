@@ -13,6 +13,7 @@ public class BillionaireBase : MonoBehaviour
     public GameObject billionPrefab;
     public GameObject bulletPrefab;
     public Transform turret;
+    public Transform firePoint;
     public SpriteRenderer sr;
     public Sprite redBase;
     public Sprite blueBase;
@@ -25,16 +26,17 @@ public class BillionaireBase : MonoBehaviour
     public int maxBillions = 10;
     public float spawnRadius = 0.5f;
     public int currentCount;
-    private float timer;
+    private float billionTimer;
 
     // turret variables
-    public float rotationSpeed = 90f;
+    public float rotationSpeed = 45f;
     public float rotationOffset = -90f;
-    public float fireInterval = 1.1f;
-    public float attackRange = 6f;
+    public float fireInterval = 3f;
+    public float attackRange = 5f;
     public int shotDamage = 2;
     public float projectileSpeed = 9f;
-    public float projectileMaxTravelDistance = 11f;
+    public float projectileMaxTravelDistance = 12f;
+    private float shotTimer;
 
     void Start()
     {
@@ -56,26 +58,55 @@ public class BillionaireBase : MonoBehaviour
     }
     void Update()
     {
-        timer += Time.deltaTime;
+        billionTimer += Time.deltaTime;
+        shotTimer += Time.deltaTime;
 
-        if (timer >= spawnInterval && currentCount < maxBillions)
+        if (billionTimer >= spawnInterval && currentCount < maxBillions)
         {
             SpawnBillion();
-            timer = 0f;
+            billionTimer = 0f;
         }
 
         Billion target = BillionTargeting.FindNearestEnemy(team, transform.position);
         if (target == null)
             return;
 
-        Vector2 toTarget = target.transform.position - transform.position;
+        Vector2 toTarget = target.transform.position - turret.position;
         float targetAngle = Mathf.Atan2(toTarget.y, toTarget.x) * Mathf.Rad2Deg + rotationOffset;
-
-        Quaternion desiredRotation = Quaternion.Euler(0f, 0f, targetAngle);
+        Quaternion targetRotation = Quaternion.Euler(0f, 0f, targetAngle);
         turret.rotation = Quaternion.RotateTowards(
             turret.rotation,
-            desiredRotation,
+            targetRotation,
             rotationSpeed * Time.deltaTime
+        );
+
+        float distance = Vector2.Distance(transform.position, target.transform.position);
+        if (distance > attackRange || shotTimer < fireInterval)
+            return;
+
+        Fire(targetAngle - rotationOffset);
+        shotTimer = 0f;
+    }
+
+    private void Fire(float targetAngle)
+    {
+        if (turret == null || bulletPrefab == null || firePoint == null)
+            return;
+
+        Quaternion targetRotation = Quaternion.Euler(turret.rotation.x, turret.rotation.y, targetAngle);
+        GameObject shotObj = Instantiate(
+            bulletPrefab,
+            firePoint.position,
+            targetRotation
+        );
+
+        Bullet shot = shotObj.GetComponent<Bullet>();
+        shot.Initialize(
+            team,
+            shotDamage,
+            projectileSpeed,
+            projectileMaxTravelDistance,
+            true
         );
     }
 

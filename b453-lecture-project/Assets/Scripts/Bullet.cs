@@ -3,9 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Bullet : MonoBehaviour
 {
-    //constant variables
+    // reference variables
     private Rigidbody2D rb;
-    private GameObject owner;
     private Team team;
     public LayerMask wallLayers;
     public SpriteRenderer sr;
@@ -13,24 +12,26 @@ public class Bullet : MonoBehaviour
     public Sprite yellowBullet;
     public Sprite redBullet;
     public Sprite greenBullet;
-
-    //other variables
     private Vector2 spawnPosition;
-    public float speed = 12f;
-    public float maxTravelDistance = 7f;
+    private bool isBig;
+
+    // bullet variables
+    private float maxTravelDistance;
     private int damage = 1;
-    private bool initialized;
+
+    private bool initialized = false;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void Initialize(GameObject owner, Team team, int damage)
+    public void Initialize(Team team, int damage, float speed, float maxTravelDistance, bool isBig)
     {
-        this.owner = owner;
         this.team = team;
         this.damage = damage;
+        this.maxTravelDistance = maxTravelDistance;
+        this.isBig = isBig;
 
         spawnPosition = transform.position;
         rb.linearVelocity = transform.right * speed;
@@ -59,7 +60,7 @@ public class Bullet : MonoBehaviour
         Billion hitBillion = other.GetComponentInParent<Billion>();
         if (hitBillion != null)
         {
-            if (hitBillion == owner || hitBillion.team == team)
+            if (hitBillion.team == team)
                 return;
 
             hitBillion.TakeDamage(damage);
@@ -67,8 +68,12 @@ public class Bullet : MonoBehaviour
             return;
         }
 
-        if (other.GetComponentInParent<BillionaireBase>() != null)
+        BillionaireBase hitBase = other.GetComponentInParent<BillionaireBase>();
+        if (hitBase != null)
         {
+            if (hitBase.team == team)
+                return;
+
             Destroy(gameObject);
             return;
         }
@@ -97,6 +102,11 @@ public class Bullet : MonoBehaviour
             case Team.green:
                 sr.sprite = greenBullet;
                 break;
+        }
+
+        if (isBig)
+        {
+            transform.localScale *= 3;
         }
     }
 }

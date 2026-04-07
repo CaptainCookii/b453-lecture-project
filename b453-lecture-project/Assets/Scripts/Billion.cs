@@ -19,7 +19,7 @@ public class Billion : MonoBehaviour
     private Rigidbody2D rb;
     private Flag targetFlag;
     public Transform innerCircle;
-    public Transform turretMuzzle;
+    public Transform firePoint;
     public GameObject bulletPrefab;
     private BillionaireBase owningBase;
 
@@ -39,7 +39,11 @@ public class Billion : MonoBehaviour
     public float fireInterval = 3f;
     public float attackRange = 3f;
     public int shotDamage = 1;
+    public float projSpeed = 12f;
+    public float projMaxTravelDist = 7f;
     private float timer;
+
+    private bool initialized = false;
 
     private void Awake()
     {
@@ -64,16 +68,24 @@ public class Billion : MonoBehaviour
 
         SetSprite();
         SetDirection(direction);
+
+        initialized = true;
     }
 
     private void FixedUpdate()
     {
+        if (!initialized)
+            return;
+
         ApplySeparation();
         MoveTowardFlag();
     }
 
     private void Update()
     {
+        if (!initialized)
+            return;
+
         timer += Time.deltaTime;
         Billion target = BillionTargeting.FindNearestEnemy(team, transform.position);
         if (target == null)
@@ -93,21 +105,22 @@ public class Billion : MonoBehaviour
 
     private void Fire()
     {
-        if (turretMuzzle == null || bulletPrefab == null)
+        if (firePoint == null || bulletPrefab == null)
             return;
 
-        
         GameObject bulletObj = Instantiate(
             bulletPrefab,
-            turretMuzzle.position,
+            firePoint.position,
             transform.rotation
         );
 
         Bullet shot = bulletObj.GetComponent<Bullet>();
         shot.Initialize(
-                gameObject,
                 team,
-                shotDamage
+                shotDamage,
+                projSpeed,
+                projMaxTravelDist,
+                false
         );
     }
 
@@ -165,6 +178,9 @@ public class Billion : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
+        if (!initialized)
+            return;
+
         if (amount <= 0 || currentHealth <= 0)
             return;
 

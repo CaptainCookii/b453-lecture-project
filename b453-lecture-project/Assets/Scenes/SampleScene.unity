@@ -1223,7 +1223,15 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8280986522274099245, guid: a0bd7a4c5864c2f46a96f93157133600, type: 3}
+      propertyPath: attackRange
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8280986522274099245, guid: a0bd7a4c5864c2f46a96f93157133600, type: 3}
       propertyPath: maxBillions
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8280986522274099245, guid: a0bd7a4c5864c2f46a96f93157133600, type: 3}
+      propertyPath: projectileMaxTravelDistance
       value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1416,7 +1424,7 @@ Transform:
   m_GameObject: {fileID: 1445009138}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.09, y: -0.59, z: -4.505084}
+  m_LocalPosition: {x: 15.58, y: -0.68, z: -4.505084}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
