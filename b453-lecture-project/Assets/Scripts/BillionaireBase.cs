@@ -1,4 +1,3 @@
-using UnityEditor.UI;
 using UnityEngine;
 
 public enum Team {
@@ -10,7 +9,10 @@ public enum Team {
 
 public class BillionaireBase : MonoBehaviour
 {
+    // reference variables
     public GameObject billionPrefab;
+    public GameObject bulletPrefab;
+    public Transform turret;
     public SpriteRenderer sr;
     public Sprite redBase;
     public Sprite blueBase;
@@ -18,12 +20,21 @@ public class BillionaireBase : MonoBehaviour
     public Sprite greenBase;
     public Team team;
 
+    // spawn variables
     public float spawnInterval = 1f;
     public int maxBillions = 10;
     public float spawnRadius = 0.5f;
-
     public int currentCount;
     private float timer;
+
+    // turret variables
+    public float rotationSpeed = 90f;
+    public float rotationOffset = -90f;
+    public float fireInterval = 1.1f;
+    public float attackRange = 6f;
+    public int shotDamage = 2;
+    public float projectileSpeed = 9f;
+    public float projectileMaxTravelDistance = 11f;
 
     void Start()
     {
@@ -52,11 +63,26 @@ public class BillionaireBase : MonoBehaviour
             SpawnBillion();
             timer = 0f;
         }
+
+        Billion target = BillionTargeting.FindNearestEnemy(team, transform.position);
+        if (target == null)
+            return;
+
+        Vector2 toTarget = target.transform.position - transform.position;
+        float targetAngle = Mathf.Atan2(toTarget.y, toTarget.x) * Mathf.Rad2Deg + rotationOffset;
+
+        Quaternion desiredRotation = Quaternion.Euler(0f, 0f, targetAngle);
+        turret.rotation = Quaternion.RotateTowards(
+            turret.rotation,
+            desiredRotation,
+            rotationSpeed * Time.deltaTime
+        );
     }
 
     void SpawnBillion()
     {
         Vector2 spawnPos = (Vector2)transform.position + new Vector2(1, 0);
+        Vector2 direction = Random.insideUnitCircle.normalized;
 
         GameObject newBillion = Instantiate(
             billionPrefab,
@@ -65,11 +91,11 @@ public class BillionaireBase : MonoBehaviour
         );
 
         Billion billion = newBillion.GetComponent<Billion>();
-        billion.team = team;
-        billion.SetSprite();
-        Vector2 direction = Random.insideUnitCircle.normalized;
-        billion.SetDirection(direction);
-        billion.owningBase = this;
+        billion.Initialize(
+            gameObject.GetComponent<BillionaireBase>(),
+            team,
+            direction
+        );
 
         currentCount++;
     }

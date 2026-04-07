@@ -4,8 +4,6 @@ using UnityEngine;
 public class Billion : MonoBehaviour
 {
     // reference variables
-    private Rigidbody2D rb;
-    private Flag targetFlag;
     public SpriteRenderer sr;
     public Sprite blueBillion;
     public Sprite yellowBillion;
@@ -16,25 +14,26 @@ public class Billion : MonoBehaviour
     public Sprite yellowTurret;
     public Sprite redTurret;
     public Sprite greenTurret;
-    public Team team;
     public LayerMask billionLayer;
+    public Team team;
+    private Rigidbody2D rb;
+    private Flag targetFlag;
     public Transform innerCircle;
     public Transform turretMuzzle;
     public GameObject bulletPrefab;
-    public BillionaireBase owningBase;
-    
+    private BillionaireBase owningBase;
+
     //health variables
-    public int maxHealth = 10;
-    public int currentHealth = 10;
+    public int maxHealth = 5;
+    public int currentHealth = 5;
     public float minInnerScale = 0.30f;
 
     // movement variables
     public float maxSpeed = 3f;
     public float acceleration = 8f;
     public float decelerationRadius = 1.5f;
-    public float separationRadius = .5f;
-    public float separationForce = 5f;
-    public float rotationOffset = 0f;
+    public float separationRadius = .1f;
+    public float separationForce = .15f;
 
     //turret variables
     public float fireInterval = 3f;
@@ -58,9 +57,17 @@ public class Billion : MonoBehaviour
         BillionRegistry.Unregister(this);
     }
 
+    public void Initialize(BillionaireBase owner, Team team, Vector2 direction)
+    {
+        owningBase = owner;
+        this.team = team;
+
+        SetSprite();
+        SetDirection(direction);
+    }
+
     private void FixedUpdate()
     {
-        
         ApplySeparation();
         MoveTowardFlag();
     }
@@ -68,13 +75,13 @@ public class Billion : MonoBehaviour
     private void Update()
     {
         timer += Time.deltaTime;
-        Billion target = FindNearestEnemy();
+        Billion target = BillionTargeting.FindNearestEnemy(team, transform.position);
         if (target == null)
             return;
 
         Vector2 toTarget = target.transform.position - transform.position;
         float angle = Mathf.Atan2(toTarget.y, toTarget.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f, 0f, angle + rotationOffset);
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
         
         float distance = Vector2.Distance(transform.position, target.transform.position);
         if (distance > attackRange || timer < fireInterval)
@@ -90,46 +97,18 @@ public class Billion : MonoBehaviour
             return;
 
         
-        GameObject shotObj = Instantiate(
+        GameObject bulletObj = Instantiate(
             bulletPrefab,
             turretMuzzle.position,
             transform.rotation
         );
 
-        Bullet shot = shotObj.GetComponent<Bullet>();
-        if (shot != null)
-        {
-            shot.Initialize(
+        Bullet shot = bulletObj.GetComponent<Bullet>();
+        shot.Initialize(
                 gameObject,
                 team,
                 shotDamage
-            );
-        }
-    }
-
-    private Billion FindNearestEnemy()
-    {
-        Billion nearest = null;
-        float bestDistSqr = float.PositiveInfinity;
-        Vector2 myPos = transform.position;
-
-        foreach (var billion in BillionRegistry.All)
-        {
-            if (billion == null || billion == this)
-                continue;
-
-            if (billion.team == this.team)
-                continue;
-
-            float distSqr = ((Vector2)billion.transform.position - myPos).sqrMagnitude;
-            if (distSqr < bestDistSqr)
-            {
-                bestDistSqr = distSqr;
-                nearest = billion;
-            }
-        }
-
-        return nearest;
+        );
     }
 
     private void UpdateVisual()
