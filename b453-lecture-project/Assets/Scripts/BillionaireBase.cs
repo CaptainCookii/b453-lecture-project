@@ -20,6 +20,7 @@ public class BillionaireBase : MonoBehaviour
     public Sprite yellowBase;
     public Sprite greenBase;
     public Team team;
+    public BaseRadialBars radialBars;
 
     // spawn variables
     public float spawnInterval = 1f;
@@ -27,6 +28,14 @@ public class BillionaireBase : MonoBehaviour
     public float spawnRadius = 0.5f;
     public int currentCount;
     private float billionTimer;
+
+    // health variables
+    public int maxHealth = 25;
+    public int currentHealth;
+
+    // experience variables
+    public int expToRankUp = 10;
+    public int currentExp = 0;
 
     // turret variables
     public float rotationSpeed = 45f;
@@ -55,7 +64,19 @@ public class BillionaireBase : MonoBehaviour
                 sr.sprite = greenBase;
                 break;
         }
+        currentHealth = maxHealth;
+        UpdateBars();
     }
+    private void OnEnable()
+    {
+        BillionaireRegistry.Register(gameObject);
+    }
+
+    private void OnDisable()
+    {
+        BillionaireRegistry.Unregister(gameObject);
+    }
+
     void Update()
     {
         billionTimer += Time.deltaTime;
@@ -67,7 +88,7 @@ public class BillionaireBase : MonoBehaviour
             billionTimer = 0f;
         }
 
-        Billion target = BillionTargeting.FindNearestEnemy(team, transform.position);
+        GameObject target = BillionTargeting.FindNearestEnemy(team, transform.position);
         if (target == null)
             return;
 
@@ -88,6 +109,42 @@ public class BillionaireBase : MonoBehaviour
         shotTimer = 0f;
     }
 
+    public void TakeDamage(int amount)
+    {
+        if (amount <= 0 || currentHealth <= 0)
+            return;
+
+        currentHealth = Mathf.Max(0, currentHealth - amount);
+        UpdateBars();
+
+        if (currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void AddExperience(int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        currentExp += amount;
+        UpdateBars();
+
+        if (currentExp >= expToRankUp)
+        {
+            // Placeholder
+        }
+    }
+    private void UpdateBars()
+    {
+        if (radialBars == null)
+            return;
+
+        radialBars.SetHealth((float)currentHealth / maxHealth);
+        radialBars.SetExperience((float)currentExp / expToRankUp);
+    }
+
     private void Fire(float targetAngle)
     {
         if (turret == null || bulletPrefab == null || firePoint == null)
@@ -102,6 +159,7 @@ public class BillionaireBase : MonoBehaviour
 
         Bullet shot = shotObj.GetComponent<Bullet>();
         shot.Initialize(
+            this,
             team,
             shotDamage,
             projectileSpeed,

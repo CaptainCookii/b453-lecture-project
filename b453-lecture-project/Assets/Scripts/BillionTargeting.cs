@@ -2,14 +2,24 @@ using UnityEngine;
 
 public static class BillionTargeting
 {
-    public static Billion FindNearestEnemy(Team team, Vector2 origin)
+    public static GameObject FindNearestEnemy(Team team, Vector2 origin)
     {
-        Billion target = null;
+        GameObject target = null;
         float closestDist = float.PositiveInfinity;
+        
 
-        foreach (var candidate in BillionRegistry.All)
+        foreach (var candidate in BillionaireRegistry.All)
         {
-            if (candidate == null || candidate.team == team)
+            Team candidateTeam;
+            if (candidate.GetComponent<Billion>() != null)
+            {
+                candidateTeam = candidate.GetComponent<Billion>().team;
+            }
+            else
+            {
+                candidateTeam = candidate.GetComponent<BillionaireBase>().team;
+            }
+            if (candidate == null || candidateTeam == team)
                 continue;
 
             float dist = ((Vector2)candidate.transform.position - origin).sqrMagnitude;

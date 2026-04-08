@@ -25,8 +25,9 @@ public class Billion : MonoBehaviour
 
     //health variables
     public int maxHealth = 5;
-    public int currentHealth = 5;
+    private int currentHealth;
     public float minInnerScale = 0.30f;
+    private int expOnDeath = 1;
 
     // movement variables
     public float maxSpeed = 3f;
@@ -48,23 +49,24 @@ public class Billion : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        
     }
 
     private void OnEnable()
     {
-        BillionRegistry.Register(this);
+        BillionaireRegistry.Register(gameObject);
     }
 
     private void OnDisable()
     {
-        BillionRegistry.Unregister(this);
+        BillionaireRegistry.Unregister(gameObject);
     }
 
     public void Initialize(BillionaireBase owner, Team team, Vector2 direction)
     {
         owningBase = owner;
         this.team = team;
+
+        currentHealth = maxHealth;
 
         SetSprite();
         SetDirection(direction);
@@ -87,15 +89,15 @@ public class Billion : MonoBehaviour
             return;
 
         timer += Time.deltaTime;
-        Billion target = BillionTargeting.FindNearestEnemy(team, transform.position);
-        if (target == null)
+        GameObject targetObj = BillionTargeting.FindNearestEnemy(team, transform.position);
+        if (targetObj == null)
             return;
 
-        Vector2 toTarget = target.transform.position - transform.position;
+        Vector2 toTarget = targetObj.transform.position - transform.position;
         float angle = Mathf.Atan2(toTarget.y, toTarget.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, angle);
         
-        float distance = Vector2.Distance(transform.position, target.transform.position);
+        float distance = Vector2.Distance(transform.position, targetObj.transform.position);
         if (distance > attackRange || timer < fireInterval)
             return;
 
@@ -116,6 +118,7 @@ public class Billion : MonoBehaviour
 
         Bullet shot = bulletObj.GetComponent<Bullet>();
         shot.Initialize(
+                owningBase,
                 team,
                 shotDamage,
                 projSpeed,
@@ -177,7 +180,7 @@ public class Billion : MonoBehaviour
         rb.AddForce(separationVector * separationForce);
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount, BillionaireBase source)
     {
         if (!initialized)
             return;
@@ -189,6 +192,7 @@ public class Billion : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            source.AddExperience(expOnDeath);
             owningBase.currentCount--;
             Destroy(gameObject);
             return;

@@ -5,6 +5,7 @@ public class Bullet : MonoBehaviour
 {
     // reference variables
     private Rigidbody2D rb;
+    private BillionaireBase owner;
     private Team team;
     public LayerMask wallLayers;
     public SpriteRenderer sr;
@@ -26,8 +27,9 @@ public class Bullet : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void Initialize(Team team, int damage, float speed, float maxTravelDistance, bool isBig)
+    public void Initialize(BillionaireBase owner, Team team, int damage, float speed, float maxTravelDistance, bool isBig)
     {
+        this.owner = owner;
         this.team = team;
         this.damage = damage;
         this.maxTravelDistance = maxTravelDistance;
@@ -63,7 +65,7 @@ public class Bullet : MonoBehaviour
             if (hitBillion.team == team)
                 return;
 
-            hitBillion.TakeDamage(damage);
+            hitBillion.TakeDamage(damage, owner);
             Destroy(gameObject);
             return;
         }
@@ -74,6 +76,7 @@ public class Bullet : MonoBehaviour
             if (hitBase.team == team)
                 return;
 
+            hitBase.TakeDamage(damage);
             Destroy(gameObject);
             return;
         }
