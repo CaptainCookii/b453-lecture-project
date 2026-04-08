@@ -136,6 +136,7 @@ public class Billion : MonoBehaviour
 
     private void MoveTowardFlag()
     {
+
         targetFlag = FlagManager.Instance.GetNearestFlag(transform.position, team);
         if (targetFlag == null) return;
         

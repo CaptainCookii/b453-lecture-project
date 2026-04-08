@@ -1,11 +1,8 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Flag : MonoBehaviour
 {
     // reference variables
-    public KeyCode key;
     public Team team;
     private Camera cam;
     public SpriteRenderer sr;
@@ -14,12 +11,18 @@ public class Flag : MonoBehaviour
     public Sprite redFlag;
     public Sprite greenFlag;
     public GameObject linePrefab;
+    public Transform focusPoint;
     private LineRenderer lr;
     private Vector3 mousePos;
 
     void Awake()
     {
         cam = Camera.main;
+    }
+
+    public void Initialize(Team team)
+    {
+        this.team = team;
 
         GameObject lineObj = Instantiate(
             linePrefab,
@@ -29,10 +32,7 @@ public class Flag : MonoBehaviour
 
         lr = lineObj.GetComponent<LineRenderer>();
         lr.enabled = false;
-    }
 
-    private void Start()
-    {
         SetupTeam();
     }
 
@@ -65,13 +65,11 @@ public class Flag : MonoBehaviour
                 sr.sprite = yellowFlag;
                 lr.startColor = Color.yellow;
                 lr.endColor = Color.yellow;
-                key = KeyCode.Mouse0;
                 break;
             case Team.green:
                 sr.sprite = greenFlag;
                 lr.startColor = Color.green;
                 lr.endColor = Color.green;
-                key = KeyCode.Mouse1;
                 break;
         }
     }
