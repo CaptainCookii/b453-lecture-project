@@ -1,4 +1,7 @@
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum Team {
     green,
@@ -20,22 +23,24 @@ public class BillionaireBase : MonoBehaviour
     public Sprite yellowBase;
     public Sprite greenBase;
     public Team team;
-    public BaseRadialBars radialBars;
+    public Image healthBar;
+    public Image experienceBar;
+    public TextMeshProUGUI rankText;
 
     // spawn variables
     public float spawnInterval = 1f;
     public int maxBillions = 10;
-    public float spawnRadius = 0.5f;
     public int currentCount;
     private float billionTimer;
 
     // health variables
-    public int maxHealth = 25;
-    public int currentHealth;
+    public float maxHealth = 25f;
+    public float currentHealth;
 
     // experience variables
     public int expToRankUp = 10;
     public int currentExp = 0;
+    public int rank = 1;
 
     // turret variables
     public float rotationSpeed = 45f;
@@ -48,25 +53,12 @@ public class BillionaireBase : MonoBehaviour
     private float shotTimer;
 
     void Start()
-    {
-        switch (team)
-        {
-            case Team.blue:
-                sr.sprite = blueBase;
-                break;
-            case Team.yellow:
-                sr.sprite = yellowBase;
-                break;
-            case Team.red:
-                sr.sprite = redBase;
-                break;
-            case Team.green:
-                sr.sprite = greenBase;
-                break;
-        }
+    {    
         currentHealth = maxHealth;
-        UpdateBars();
+        UpdateUI();
+        SetSprite();
     }
+
     private void OnEnable()
     {
         BillionaireRegistry.Register(gameObject);
@@ -109,13 +101,10 @@ public class BillionaireBase : MonoBehaviour
         shotTimer = 0f;
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(float amount)
     {
-        if (amount <= 0 || currentHealth <= 0)
-            return;
-
-        currentHealth = Mathf.Max(0, currentHealth - amount);
-        UpdateBars();
+        currentHealth -= amount;
+        UpdateUI();
 
         if (currentHealth <= 0)
         {
@@ -125,24 +114,26 @@ public class BillionaireBase : MonoBehaviour
 
     public void AddExperience(int amount)
     {
-        if (amount <= 0)
-            return;
-
         currentExp += amount;
-        UpdateBars();
+        UpdateUI();
 
         if (currentExp >= expToRankUp)
         {
-            // Placeholder
+            currentExp -= expToRankUp;
+            rank++;
+            expToRankUp = Mathf.CeilToInt(2f * Mathf.Pow(rank, 2.2f) + 8f);
         }
     }
-    private void UpdateBars()
+    private void UpdateUI()
     {
-        if (radialBars == null)
-            return;
+        if (healthBar != null)
+            healthBar.fillAmount = Mathf.Clamp01(currentHealth / maxHealth);
 
-        radialBars.SetHealth((float)currentHealth / maxHealth);
-        radialBars.SetExperience((float)currentExp / expToRankUp);
+        if (experienceBar != null)
+            experienceBar.fillAmount = Mathf.Clamp01((float)currentExp / expToRankUp);
+
+        if (rankText != null)
+            rankText.text = rank.ToString();
     }
 
     private void Fire(float targetAngle)
@@ -183,9 +174,29 @@ public class BillionaireBase : MonoBehaviour
         billion.Initialize(
             gameObject.GetComponent<BillionaireBase>(),
             team,
-            direction
+            direction,
+            rank
         );
 
         currentCount++;
+    }
+
+    void SetSprite()
+    {
+        switch (team)
+        {
+            case Team.blue:
+                sr.sprite = blueBase;
+                break;
+            case Team.yellow:
+                sr.sprite = yellowBase;
+                break;
+            case Team.red:
+                sr.sprite = redBase;
+                break;
+            case Team.green:
+                sr.sprite = greenBase;
+                break;
+        }
     }
 }

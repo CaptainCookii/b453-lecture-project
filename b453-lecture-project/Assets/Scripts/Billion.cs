@@ -23,15 +23,15 @@ public class Billion : MonoBehaviour
     public GameObject bulletPrefab;
     private BillionaireBase owningBase;
 
-    //health variables
-    public int maxHealth = 5;
-    private int currentHealth;
+    //health and experience variables
+    private float maxHealth;
+    private float currentHealth;
     public float minInnerScale = 0.30f;
-    private int expOnDeath = 1;
+    private int expOnDeath;
 
     // movement variables
-    public float maxSpeed = 3f;
-    public float acceleration = 8f;
+    private float maxSpeed;
+    public float acceleration = 6f;
     public float decelerationRadius = 1.5f;
     public float separationRadius = .1f;
     public float separationForce = .15f;
@@ -39,7 +39,7 @@ public class Billion : MonoBehaviour
     //turret variables
     public float fireInterval = 3f;
     public float attackRange = 3f;
-    public int shotDamage = 1;
+    private float shotDamage;
     public float projSpeed = 12f;
     public float projMaxTravelDist = 7f;
     private float timer;
@@ -61,12 +61,16 @@ public class Billion : MonoBehaviour
         BillionaireRegistry.Unregister(gameObject);
     }
 
-    public void Initialize(BillionaireBase owner, Team team, Vector2 direction)
+    public void Initialize(BillionaireBase owner, Team team, Vector2 direction, int rank)
     {
         owningBase = owner;
         this.team = team;
-
+        
+        maxHealth = rank * 2.5f;
         currentHealth = maxHealth;
+        expOnDeath = rank;
+        maxSpeed = (rank /2f) + 3;
+        shotDamage = rank / 2f;
 
         SetSprite();
         SetDirection(direction);
@@ -180,7 +184,7 @@ public class Billion : MonoBehaviour
         rb.AddForce(separationVector * separationForce);
     }
 
-    public void TakeDamage(int amount, BillionaireBase source)
+    public void TakeDamage(float amount, BillionaireBase source)
     {
         if (!initialized)
             return;

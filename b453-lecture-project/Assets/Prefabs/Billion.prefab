@@ -390,16 +390,12 @@ MonoBehaviour:
   innerCircle: {fileID: 349611978387244370}
   firePoint: {fileID: 4253448422645177556}
   bulletPrefab: {fileID: 8263341998464550209, guid: 3cfe8c4f275cb294788c709f1b3b703f, type: 3}
-  maxHealth: 5
-  currentHealth: 5
   minInnerScale: 0.3
-  maxSpeed: 3
-  acceleration: 8
+  acceleration: 6
   decelerationRadius: 1.5
   separationRadius: 0.1
   separationForce: 0.15
   fireInterval: 1.5
   attackRange: 3
-  shotDamage: 1
   projSpeed: 12
   projMaxTravelDist: 7

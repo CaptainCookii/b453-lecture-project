@@ -10,6 +10,9 @@ public static class BillionTargeting
 
         foreach (var candidate in BillionaireRegistry.All)
         {
+            if (candidate == null)
+                continue;
+
             Team candidateTeam;
             if (candidate.GetComponent<Billion>() != null)
             {
@@ -19,7 +22,8 @@ public static class BillionTargeting
             {
                 candidateTeam = candidate.GetComponent<BillionaireBase>().team;
             }
-            if (candidate == null || candidateTeam == team)
+
+            if (candidateTeam == team)
                 continue;
 
             float dist = ((Vector2)candidate.transform.position - origin).sqrMagnitude;

@@ -18,7 +18,7 @@ public class Bullet : MonoBehaviour
 
     // bullet variables
     private float maxTravelDistance;
-    private int damage = 1;
+    private float damage;
 
     private bool initialized = false;
 
@@ -27,7 +27,7 @@ public class Bullet : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void Initialize(BillionaireBase owner, Team team, int damage, float speed, float maxTravelDistance, bool isBig)
+    public void Initialize(BillionaireBase owner, Team team, float damage, float speed, float maxTravelDistance, bool isBig)
     {
         this.owner = owner;
         this.team = team;
