@@ -91,7 +91,7 @@ public class FlagManager : MonoBehaviour
         {
             if (flag.team != team) continue;
 
-            float dist = Vector2.Distance(position, flag.transform.position);
+            float dist = Vector2.Distance(position, flag.focusPoint.position);
 
             if (dist < minDist)
             {

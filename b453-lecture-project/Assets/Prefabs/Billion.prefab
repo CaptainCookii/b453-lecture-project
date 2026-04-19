@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 759291245
   m_SortingLayer: 3
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: 8809290787474058199, guid: c3f1c8e0a6f9996499ad3c8a6c939577, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -118,6 +118,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8874140575905877280}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3156518274022569661
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5318090964333585447}
+  m_Layer: 0
+  m_Name: RingRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5318090964333585447
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3156518274022569661}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3523266497530913251}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7138303030254975372
 GameObject:
@@ -194,9 +225,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 759291245
   m_SortingLayer: 3
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: -5905639833428164242, guid: fc2d0740e24d5e843b5ff4c13c850384, type: 3}
-  m_Color: {r: 0.9960785, g: 0.9960785, b: 0.9960785, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -241,6 +272,7 @@ Transform:
   m_Children:
   - {fileID: 349611978387244370}
   - {fileID: 8874140575905877280}
+  - {fileID: 5318090964333585447}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1620884839637884121
@@ -286,7 +318,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 759291245
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: -5905639833428164242, guid: 78015aff844e39c4a9cd3e53e588fb46, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -386,10 +418,12 @@ MonoBehaviour:
   billionLayer:
     serializedVersion: 2
     m_Bits: 64
-  team: 0
+  team: 3
   innerCircle: {fileID: 349611978387244370}
   firePoint: {fileID: 4253448422645177556}
   bulletPrefab: {fileID: 8263341998464550209, guid: 3cfe8c4f275cb294788c709f1b3b703f, type: 3}
+  ringRoot: {fileID: 5318090964333585447}
+  spikePrefab: {fileID: 3224796124364620487, guid: 5bd3ea115db33bc41ac1b8ebebacdf94, type: 3}
   minInnerScale: 0.3
   acceleration: 6
   decelerationRadius: 1.5
@@ -399,3 +433,6 @@ MonoBehaviour:
   attackRange: 3
   projSpeed: 12
   projMaxTravelDist: 7
+  radius: 0.28
+  baseRotationSpeed: 40
+  rotationSpeedPerRank: 5

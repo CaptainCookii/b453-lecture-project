@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -16,34 +17,45 @@ public class Billion : MonoBehaviour
     public Sprite greenTurret;
     public LayerMask billionLayer;
     public Team team;
-    private Rigidbody2D rb;
-    private Flag targetFlag;
     public Transform innerCircle;
     public Transform firePoint;
     public GameObject bulletPrefab;
+    private Rigidbody2D rb;
+    private Flag targetFlag;
     private BillionaireBase owningBase;
+    public Transform ringRoot;
+    public GameObject spikePrefab;
+    private Color32 spikeColor;
 
-    //health and experience variables
+    // health and experience variables
     private float maxHealth;
     private float currentHealth;
-    public float minInnerScale = 0.30f;
+    [SerializeField] private float minInnerScale = 0.30f;
     private int expOnDeath;
 
     // movement variables
     private float maxSpeed;
-    public float acceleration = 6f;
-    public float decelerationRadius = 1.5f;
-    public float separationRadius = .1f;
-    public float separationForce = .15f;
+    [SerializeField] private float acceleration = 6f;
+    [SerializeField] private float decelerationRadius = 1.5f;
+    [SerializeField] private float separationRadius = .1f;
+    [SerializeField] private float separationForce = .15f;
 
-    //turret variables
-    public float fireInterval = 3f;
-    public float attackRange = 3f;
+    // turret variables
+    [SerializeField] private float fireInterval = 1.5f;
+    [SerializeField] private float attackRange = 3f;
     private float shotDamage;
-    public float projSpeed = 12f;
-    public float projMaxTravelDist = 7f;
+    [SerializeField] private float projSpeed = 12f;
+    [SerializeField] private float projMaxTravelDist = 7f;
     private float timer;
 
+    // rank variables
+    private int rank;
+    [SerializeField] private float radius = 0.38f;
+    [SerializeField] private float baseRotationSpeed = 40f;
+    [SerializeField] private float rotationSpeedPerRank = 8f;
+    private float rotationSpeed;
+
+    // initialization variable
     private bool initialized = false;
 
     private void Awake()
@@ -65,6 +77,7 @@ public class Billion : MonoBehaviour
     {
         owningBase = owner;
         this.team = team;
+        this.rank = rank;
         
         maxHealth = rank * 2.5f;
         currentHealth = maxHealth;
@@ -73,6 +86,7 @@ public class Billion : MonoBehaviour
         shotDamage = rank / 2f;
 
         SetSprite();
+        SetRank();
         SetDirection(direction);
 
         initialized = true;
@@ -92,6 +106,9 @@ public class Billion : MonoBehaviour
         if (!initialized)
             return;
 
+        if (ringRoot != null)
+            ringRoot.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
+
         timer += Time.deltaTime;
         GameObject targetObj = BillionTargeting.FindNearestEnemy(team, transform.position);
         if (targetObj == null)
@@ -107,6 +124,25 @@ public class Billion : MonoBehaviour
 
         Fire();
         timer = 0f;
+    }
+
+    public void SetRank()
+    {
+        rotationSpeed = baseRotationSpeed + (rank * rotationSpeedPerRank);
+
+        if (ringRoot == null)
+            return;
+
+        for (int i = 0; i < rank; i++)
+        {
+            float t = (float)i / rank;
+            float angle = t * Mathf.PI * 2f;
+
+            GameObject spike = Instantiate(spikePrefab, ringRoot);
+            spike.transform.localPosition = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * radius;
+            spike.transform.localRotation = Quaternion.Euler(0f, 0f, angle * Mathf.Rad2Deg + 90f);
+            spike.GetComponent<SpriteRenderer>().color = spikeColor;
+        }
     }
 
     private void Fire()
@@ -160,7 +196,7 @@ public class Billion : MonoBehaviour
         rb.AddForce(steering * acceleration);
     }
 
-    void ApplySeparation()
+    private void ApplySeparation()
     {
         Collider2D[] neighbors = Physics2D.OverlapCircleAll(
             transform.position,
@@ -217,18 +253,22 @@ public class Billion : MonoBehaviour
             case Team.blue:
                 sr.sprite = blueBillion;
                 srTurret.sprite = blueTurret;
+                spikeColor = new Color32(15, 97, 127, 255);
                 break;
             case Team.yellow:
                 sr.sprite = yellowBillion;
                 srTurret.sprite = yellowTurret;
+                spikeColor = new Color32(133, 100, 51, 255);
                 break;
             case Team.red:
                 sr.sprite = redBillion;
                 srTurret.sprite = redTurret;
+                spikeColor = new Color32(101, 33, 55, 255);
                 break;
             case Team.green:
                 sr.sprite = greenBillion;
                 srTurret.sprite = greenTurret;
+                spikeColor = new Color32(7, 92, 67, 255);
                 break;
         }
     }

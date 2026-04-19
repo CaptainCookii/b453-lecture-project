@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,35 +27,45 @@ public class BillionaireBase : MonoBehaviour
     public TextMeshProUGUI rankText;
 
     // spawn variables
-    public float spawnInterval = 1f;
-    public int maxBillions = 10;
+    private float spawnInterval = 1f;
+    private int maxBillions = 15;
     public int currentCount;
     private float billionTimer;
 
     // health variables
-    public float maxHealth = 25f;
-    public float currentHealth;
+    private float maxHealth = 25f;
+    private float currentHealth;
 
     // experience variables
-    public int expToRankUp = 10;
-    public int currentExp = 0;
-    public int rank = 1;
+    private int expToRankUp = 10;
+    private int currentExp = 0;
+    private int rank = 1;
 
     // turret variables
-    public float rotationSpeed = 45f;
-    public float rotationOffset = -90f;
-    public float fireInterval = 3f;
-    public float attackRange = 5f;
-    public int shotDamage = 2;
-    public float projectileSpeed = 9f;
-    public float projectileMaxTravelDistance = 12f;
+    private float rotationSpeed = 45f;
+    private float rotationOffset = -90f;
+    private float fireInterval = 3f;
+    private float attackRange = 5f;
+    private float shotDamage = 3;
+    private float projectileSpeed = 9f;
+    private float projectileMaxTravelDistance = 12f;
     private float shotTimer;
 
-    void Start()
-    {    
+    private bool initialized = false;
+
+    public void Initialize(Team team, int rank)
+    {
+        this.team = team;
+        this.rank = rank;
+
+        maxHealth = rank * 2.5f;
         currentHealth = maxHealth;
-        UpdateUI();
+        shotDamage = rank / 2f;
+
         SetSprite();
+        UpdateUI();
+
+        initialized = true;
     }
 
     private void OnEnable()
@@ -71,6 +80,9 @@ public class BillionaireBase : MonoBehaviour
 
     void Update()
     {
+        if (!initialized)
+            return;
+
         billionTimer += Time.deltaTime;
         shotTimer += Time.deltaTime;
 

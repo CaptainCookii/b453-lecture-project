@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ceda945dcb031a1478089ca88a2ec28b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  team: 0
+  team: 3
   sr: {fileID: 8589925286186356940}
   blueFlag: {fileID: -4011507039840530130, guid: 32765c49a3aa2e94bb7ab5c797f5cdcc, type: 3}
   yellowFlag: {fileID: 1196469081717521920, guid: 64a222db5995daf4f8c711fa990d7a23, type: 3}

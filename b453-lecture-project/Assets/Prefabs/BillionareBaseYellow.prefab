@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 8280986522274099245}
   - component: {fileID: 7041847605220611995}
   m_Layer: 0
-  m_Name: BillionareBase
+  m_Name: BillionareBaseYellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -250,25 +250,11 @@ MonoBehaviour:
   blueBase: {fileID: 3432717553192849819, guid: 03338cb83102ff148b50d021aa49d0c7, type: 3}
   yellowBase: {fileID: -8082249768011107866, guid: 9c812ff22adbfa54495b217039efb571, type: 3}
   greenBase: {fileID: 8512384730916251377, guid: c80a909a9480e3547a2b91f966f664eb, type: 3}
-  team: 0
+  team: 1
   healthBar: {fileID: 3426936266551577668}
   experienceBar: {fileID: 2819410465334269702}
   rankText: {fileID: 6058810867955031538}
-  spawnInterval: 1
-  maxBillions: 15
   currentCount: 0
-  maxHealth: 25
-  currentHealth: 0
-  expToRankUp: 10
-  currentExp: 0
-  rank: 1
-  rotationSpeed: 45
-  rotationOffset: -90
-  fireInterval: 3
-  attackRange: 5
-  shotDamage: 3
-  projectileSpeed: 9
-  projectileMaxTravelDistance: 12
 --- !u!58 &7041847605220611995
 CircleCollider2D:
   m_ObjectHideFlags: 0
