@@ -8326,14 +8326,10 @@ MonoBehaviour:
   width: 36
   height: 20
   randomFillPercent: 49
-  smoothingIterations: 4
-  generationAttempts: 25
+  smoothingIterations: 5
+  generationAttempts: 30
   minimumWalkableCoverage: 0.35
-  basePrefabs:
-  - {fileID: 8280986522274099245, guid: a0bd7a4c5864c2f46a96f93157133600, type: 3}
-  - {fileID: 8280986522274099245, guid: 333be182e43ffc049a0c48f08a68eac6, type: 3}
-  - {fileID: 8280986522274099245, guid: 4fdb9bd9663220d4da24e3008200da37, type: 3}
-  - {fileID: 8280986522274099245, guid: 67f453d9ed44d154393b789c5a60aad0, type: 3}
+  billionaireBasePrefab: {fileID: 1530360015574062781, guid: a0bd7a4c5864c2f46a96f93157133600, type: 3}
   baseRadius: 1.1
   billionRadius: 0.25
   wallClearanceBuffer: 0.6

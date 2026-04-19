@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 8280986522274099245}
   - component: {fileID: 7041847605220611995}
   m_Layer: 0
-  m_Name: BillionareBaseYellow
+  m_Name: BillionaireBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -243,6 +243,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   billionPrefab: {fileID: 8432110182930177971, guid: b79926d42ca383f498f87216df762286, type: 3}
   bulletPrefab: {fileID: 8263341998464550209, guid: 3cfe8c4f275cb294788c709f1b3b703f, type: 3}
+  capturePointPrefab: {fileID: 1530360015574062781, guid: ed115e5581a360c4ba99041c66df7fd3, type: 3}
   turret: {fileID: 7692821773013445736}
   firePoint: {fileID: 4319242391868439100}
   sr: {fileID: 5672215441678173105}
@@ -250,7 +251,7 @@ MonoBehaviour:
   blueBase: {fileID: 3432717553192849819, guid: 03338cb83102ff148b50d021aa49d0c7, type: 3}
   yellowBase: {fileID: -8082249768011107866, guid: 9c812ff22adbfa54495b217039efb571, type: 3}
   greenBase: {fileID: 8512384730916251377, guid: c80a909a9480e3547a2b91f966f664eb, type: 3}
-  team: 1
+  team: 3
   healthBar: {fileID: 3426936266551577668}
   experienceBar: {fileID: 2819410465334269702}
   rankText: {fileID: 6058810867955031538}

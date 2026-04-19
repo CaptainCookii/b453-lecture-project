@@ -14,6 +14,7 @@ public class BillionaireBase : MonoBehaviour
     // reference variables
     public GameObject billionPrefab;
     public GameObject bulletPrefab;
+    public GameObject capturePointPrefab;
     public Transform turret;
     public Transform firePoint;
     public SpriteRenderer sr;
@@ -58,9 +59,9 @@ public class BillionaireBase : MonoBehaviour
         this.team = team;
         this.rank = rank;
 
-        maxHealth = rank * 2.5f;
+        maxHealth = (rank * 3f) + 25;
         currentHealth = maxHealth;
-        shotDamage = rank / 2f;
+        shotDamage = rank;
 
         SetSprite();
         UpdateUI();
@@ -120,6 +121,9 @@ public class BillionaireBase : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            GameObject capturePointObj = Instantiate(capturePointPrefab, transform.position, transform.rotation);
+            capturePointObj.GetComponent<CapturePoint>().Initialize(Mathf.Max(1,rank/2));
+            Debug.Log(capturePointObj);
             Destroy(gameObject);
         }
     }
@@ -134,6 +138,9 @@ public class BillionaireBase : MonoBehaviour
             currentExp -= expToRankUp;
             rank++;
             expToRankUp = Mathf.CeilToInt(2f * Mathf.Pow(rank, 2.2f) + 8f);
+            maxHealth = (rank * 3f) + 25;
+            currentHealth = maxHealth;
+            shotDamage = rank;
         }
     }
     private void UpdateUI()

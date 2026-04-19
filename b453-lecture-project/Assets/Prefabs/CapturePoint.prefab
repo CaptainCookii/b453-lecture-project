@@ -10,8 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6274605895125827152}
   - component: {fileID: 5672215441678173105}
-  - component: {fileID: 8280986522274099245}
-  - component: {fileID: 7041847605220611995}
+  - component: {fileID: 1605260398215040157}
   m_Layer: 0
   m_Name: CapturePoint
   m_TagString: Untagged
@@ -29,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4, y: 4, z: 1}
+  m_LocalScale: {x: 8, y: 8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5689551606874750153}
@@ -90,7 +89,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &8280986522274099245
+--- !u!114 &1605260398215040157
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -99,59 +98,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1530360015574062781}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e77a80db3f3e0546b7fb7d7dc0b9b33, type: 3}
+  m_Script: {fileID: 11500000, guid: f63bfbf0dedeb9445a3fdae8a88f23b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  billionPrefab: {fileID: 8432110182930177971, guid: b79926d42ca383f498f87216df762286, type: 3}
-  bulletPrefab: {fileID: 8263341998464550209, guid: 3cfe8c4f275cb294788c709f1b3b703f, type: 3}
-  turret: {fileID: 0}
-  firePoint: {fileID: 0}
-  sr: {fileID: 5672215441678173105}
-  redBase: {fileID: 774813160090618487, guid: e92ef9d152d019242ad4dd8f552cd79f, type: 3}
-  blueBase: {fileID: 3432717553192849819, guid: 03338cb83102ff148b50d021aa49d0c7, type: 3}
-  yellowBase: {fileID: -8082249768011107866, guid: 9c812ff22adbfa54495b217039efb571, type: 3}
-  greenBase: {fileID: 8512384730916251377, guid: c80a909a9480e3547a2b91f966f664eb, type: 3}
-  team: 3
-  healthBar: {fileID: 0}
-  experienceBar: {fileID: 2819410465334269702}
-  rankText: {fileID: 0}
-  currentCount: 0
---- !u!58 &7041847605220611995
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1530360015574062781}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  billionaireBasePrefab: {fileID: 1530360015574062781, guid: a0bd7a4c5864c2f46a96f93157133600, type: 3}
+  captureFillImage: {fileID: 2819410465334269702}
+  captureRadius: 2
+  pointsPerSecondPerPawn: 2
+  pointsToCapture: 100
+  pushRadius: 2.8
+  pushForce: 8
 --- !u!1 &2072232963651483091
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,7 +268,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9760479, g: 1, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.89161587, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -325,7 +281,7 @@ MonoBehaviour:
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
-  m_FillClockwise: 0
+  m_FillClockwise: 1
   m_FillOrigin: 2
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1

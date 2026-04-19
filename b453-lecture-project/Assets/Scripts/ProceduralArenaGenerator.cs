@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -19,7 +20,7 @@ public class ProceduralArenaGenerator : MonoBehaviour
     [SerializeField] private float minimumWalkableCoverage = 0.45f;
 
     // base placement
-    [SerializeField] private BillionaireBase[] basePrefabs = new BillionaireBase[4];
+    [SerializeField] private GameObject billionaireBasePrefab;
     [SerializeField] private float baseRadius = 1.1f;
     [SerializeField] private float billionRadius = 0.25f;
     [SerializeField] private float wallClearanceBuffer = 0.6f;
@@ -39,13 +40,13 @@ public class ProceduralArenaGenerator : MonoBehaviour
 
     public void GenerateLevel()
     {
-        if (wallTilemap == null || wallTile == null || basePrefabs == null || basePrefabs.Length != 4)
+        if (wallTilemap == null || wallTile == null || billionaireBasePrefab == null)
         {
             Debug.LogError("Arena generator is missing references.");
             return;
         }
 
-        seed = new System.Random(Random.Range(int.MinValue, int.MaxValue));
+        seed = new System.Random(UnityEngine.Random.Range(int.MinValue, int.MaxValue));
 
         // loops through until valid generation
         for (int attempt = 0; attempt < generationAttempts; attempt++)
@@ -288,20 +289,19 @@ public class ProceduralArenaGenerator : MonoBehaviour
 
         RectInt[] regions = GetQuadrantRegions();
 
-        for (int i = 0; i < 4; i++)
+        int i = 0;
+        foreach (Team team in (Team[])Enum.GetValues(typeof(Team)))
         {
-            if (basePrefabs[i] == null)
-                return false;
-
             Vector2 worldPos;
             bool found = TryFindBasePositionInRegion(regions[i], out worldPos);
             if (!found)
                 return false;
 
-            BillionaireBase spawned = Instantiate(basePrefabs[i], worldPos, Quaternion.identity);
-            spawned.Initialize(spawned.GetComponent<BillionaireBase>().team, 1);
-            spawnedBases.Add(spawned);
+            GameObject spawned = Instantiate(billionaireBasePrefab, worldPos, Quaternion.identity);
+            spawned.GetComponent<BillionaireBase>().Initialize(team, 1);
+            spawnedBases.Add(spawned.GetComponent<BillionaireBase>());
             spawnedBasePositions.Add(worldPos);
+            i++;
         }
 
         return true;
