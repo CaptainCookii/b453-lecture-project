@@ -14,11 +14,11 @@ public class Bullet : MonoBehaviour
     public Sprite redBullet;
     public Sprite greenBullet;
     private Vector2 spawnPosition;
-    private bool isBig;
 
     // bullet variables
     private float maxTravelDistance;
     private float damage;
+    private bool isBig;
 
     private bool initialized = false;
 

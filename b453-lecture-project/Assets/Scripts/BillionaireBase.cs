@@ -122,7 +122,7 @@ public class BillionaireBase : MonoBehaviour
         if (currentHealth <= 0)
         {
             GameObject capturePointObj = Instantiate(capturePointPrefab, transform.position, transform.rotation);
-            capturePointObj.GetComponent<CapturePoint>().Initialize(Mathf.Max(1,rank/2));
+            capturePointObj.GetComponent<CapturePoint>().Initialize(Mathf.Max(1,rank/2), team);
             Debug.Log(capturePointObj);
             Destroy(gameObject);
         }

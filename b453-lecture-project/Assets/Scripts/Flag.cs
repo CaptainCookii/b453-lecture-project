@@ -3,6 +3,7 @@ using UnityEngine;
 public class Flag : MonoBehaviour
 {
     // reference variables
+    private Team playerTeam;
     public Team team;
     private Camera cam;
     public SpriteRenderer sr;
@@ -33,28 +34,38 @@ public class Flag : MonoBehaviour
         lr = lineObj.GetComponent<LineRenderer>();
         lr.enabled = false;
 
+        this.playerTeam = FlagManager.Instance.playerTeam;
         SetupTeam();
-    }
-
-    private void OnMouseDown()
-    {
-        lr.enabled = true;
-        lr.positionCount = 2;
-        lr.SetPosition(0, mousePos);
-        lr.SetPosition(1, mousePos);
     }
 
     private void Update()
     {
-        mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-        mousePos.z = 0;
-        lr.SetPosition(1, mousePos);
+        if (team.Equals(playerTeam))
+        {
+            mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0;
+            lr.SetPosition(1, mousePos);
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        if (team.Equals(playerTeam))
+        {
+            lr.enabled = true;
+            lr.positionCount = 2;
+            lr.SetPosition(0, mousePos);
+            lr.SetPosition(1, mousePos);
+        }
     }
 
     private void OnMouseUp()
     {
-        transform.position = mousePos;
-        lr.enabled = false;
+        if (team.Equals(playerTeam))
+        {
+            transform.position = mousePos;
+            lr.enabled = false;
+        }
     }
 
     public void SetupTeam()
@@ -70,6 +81,16 @@ public class Flag : MonoBehaviour
                 sr.sprite = greenFlag;
                 lr.startColor = Color.green;
                 lr.endColor = Color.green;
+                break;
+            case Team.blue:
+                sr.sprite = blueFlag;
+                lr.startColor = Color.blue;
+                lr.endColor = Color.blue;
+                break;
+            case Team.red:
+                sr.sprite = redFlag;
+                lr.startColor = Color.red;
+                lr.endColor = Color.red;
                 break;
         }
     }

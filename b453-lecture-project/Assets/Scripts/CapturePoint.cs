@@ -7,12 +7,13 @@ public class CapturePoint : MonoBehaviour
     // reference variables
     [SerializeField] private GameObject billionaireBasePrefab;
     [SerializeField] private Image captureFillImage;
+    public Team originatingTeam { get; private set; }
 
     // capturepoint variables
     [SerializeField] private float captureRadius = 2f;
     [SerializeField] private float pointsPerSecondPerPawn = 2f;
     [SerializeField] private float pointsToCapture = 100f;
-    private float captureProgress;
+    private float captureProgress = 0;
 
     // billionareBase variables
     [SerializeField] private float pushRadius = 2.8f;
@@ -20,9 +21,20 @@ public class CapturePoint : MonoBehaviour
     private int rank = 1;
     private Team? capturingTeam;
 
-    public void Initialize(int rank)
+    private void OnEnable()
+    {
+        CapturePointRegistry.Register(this);
+    }
+
+    private void OnDisable()
+    {
+        CapturePointRegistry.Unregister(this);
+    }
+
+    public void Initialize(int rank, Team originatingTeam)
     {
         this.rank = rank;
+        this.originatingTeam = originatingTeam;
     }
 
     private void Update()

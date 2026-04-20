@@ -7,14 +7,15 @@ public class FlagManager : MonoBehaviour
     public static FlagManager Instance;
     private Camera cam;
     public GameObject flagPrefab;
+    public Team playerTeam;
 
     // flag variables
-    public List<Flag> greenFlags = new List<Flag>();
+    public List<Flag> redFlags = new List<Flag>();
     public List<Flag> yellowFlags = new List<Flag>();
-    private KeyCode greenKey = KeyCode.Q;
-    private KeyCode yellowKey = KeyCode.E;
-    private int greenFlagCount = 0;
-    private int yellowFlagCount = 0;
+    public List<Flag> greenFlags = new List<Flag>();
+    public List<Flag> blueFlags = new List<Flag>();
+    private KeyCode playerKey = KeyCode.E;
+    private int playerFlagCount = 0;
 
     void Awake()
     {
@@ -24,23 +25,14 @@ public class FlagManager : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyDown(yellowKey) && yellowFlagCount < 2)
+        if (Input.GetKeyDown(playerKey) && playerFlagCount < 2)
         {
-            placeFlag(Team.yellow);
-            yellowFlagCount++;
+            placeFlag(playerTeam);
+            playerFlagCount++;
         }
-        else if (Input.GetKeyDown(yellowKey))
+        else if (Input.GetKeyDown(playerKey))
         {
-            MoveNearestFlag(Team.yellow);
-        }
-        if (Input.GetKeyDown(greenKey) && greenFlagCount < 2)
-        {
-            placeFlag(Team.green);
-            greenFlagCount++;
-        }
-        else if (Input.GetKeyDown(greenKey))
-        {
-            MoveNearestFlag(Team.green);
+            MoveNearestFlag(playerTeam);
         }
     }
 
@@ -56,38 +48,34 @@ public class FlagManager : MonoBehaviour
         );
 
         Flag flag = newFlag.GetComponent<Flag>();
-        flag.Initialize(
-            team
-        );
+        flag.Initialize(team);
 
-        switch (team)
-        {
-            case Team.yellow:
-                yellowFlags.Add(flag);
-                break;
-            case Team.green:
-                greenFlags.Add(flag);
-                break;
-        }
+        AddFlagToList(flag, team);
     }
 
     public Flag GetNearestFlag(Vector2 position, Team team)
     {
         Flag nearest = null;
         float minDist = Mathf.Infinity;
-        List<Flag> flags = new List<Flag>();
+        List<Flag> Flags = new List<Flag>();
 
         switch (team)
         {
             case Team.yellow:
-                flags = yellowFlags;
+                Flags = yellowFlags;
                 break;
             case Team.green:
-                flags = greenFlags;
+                Flags = greenFlags;
+                break;
+            case Team.blue:
+                Flags = blueFlags;
+                break;
+            case Team.red:
+                Flags = redFlags;
                 break;
         }
 
-        foreach (var flag in flags)
+        foreach (var flag in Flags)
         {
             if (flag.team != team) continue;
 
@@ -109,5 +97,51 @@ public class FlagManager : MonoBehaviour
         Flag nearestFlag = GetNearestFlag(mousePos, team);
 
         nearestFlag.transform.position = mousePos;
+    }
+
+    public void AddFlagToList(Flag flag, Team team)
+    {
+        List<Flag> Flags = new List<Flag>();
+
+        switch (team)
+        {
+            case Team.yellow:
+                Flags = yellowFlags;
+                break;
+            case Team.green:
+                Flags = greenFlags;
+                break;
+            case Team.blue:
+                Flags = blueFlags;
+                break;
+            case Team.red:
+                Flags = redFlags;
+                break;
+        }
+
+        Flags.Add(flag);
+    }
+
+    public void RemoveFlagFromList(Flag flag, Team team)
+    {
+        List<Flag> Flags = new List<Flag>();
+
+        switch (team)
+        {
+            case Team.yellow:
+                Flags = yellowFlags;
+                break;
+            case Team.green:
+                Flags = greenFlags;
+                break;
+            case Team.blue:
+                Flags = blueFlags;
+                break;
+            case Team.red:
+                Flags = redFlags;
+                break;
+        }
+
+        Flags.Remove(flag);
     }
 }

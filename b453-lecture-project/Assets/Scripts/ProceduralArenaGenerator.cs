@@ -8,6 +8,9 @@ public class ProceduralArenaGenerator : MonoBehaviour
     // reference variables
     [SerializeField] private Tilemap wallTilemap;
     [SerializeField] private TileBase wallTile;
+    [SerializeField] private GameObject billionaireBasePrefab;
+    [SerializeField] private GameObject flagControllerPrefab;
+    [SerializeField] private GameObject flagPrefab;
 
     // arena size
     [SerializeField] private int width = 120;
@@ -20,7 +23,6 @@ public class ProceduralArenaGenerator : MonoBehaviour
     [SerializeField] private float minimumWalkableCoverage = 0.45f;
 
     // base placement
-    [SerializeField] private GameObject billionaireBasePrefab;
     [SerializeField] private float baseRadius = 1.1f;
     [SerializeField] private float billionRadius = 0.25f;
     [SerializeField] private float wallClearanceBuffer = 0.6f;
@@ -30,7 +32,8 @@ public class ProceduralArenaGenerator : MonoBehaviour
     private bool[,] walls;
     private readonly List<Vector2> spawnedBasePositions = new List<Vector2>();
     private readonly List<BillionaireBase> spawnedBases = new List<BillionaireBase>();
-
+    private readonly List<Flag> spawnedFlags = new List<Flag>();
+    private readonly List<TeamFlagController> spawnedFlagControllers = new List<TeamFlagController>();
     private System.Random seed;
 
     private void Start()
@@ -79,8 +82,20 @@ public class ProceduralArenaGenerator : MonoBehaviour
                 Destroy(spawnedBases[i].gameObject);
         }
 
+        for (int i = 0;i < spawnedFlags.Count;i++)
+        {
+            if (spawnedFlags[i] != null && spawnedFlagControllers[i] != null)
+            {
+                FlagManager.Instance.RemoveFlagFromList(spawnedFlags[i], spawnedFlags[i].team);
+                Destroy(spawnedFlags[i].gameObject);
+                Destroy(spawnedFlagControllers[i].gameObject);
+            }
+        }
+
         spawnedBases.Clear();
         spawnedBasePositions.Clear();
+        spawnedFlags.Clear();
+        spawnedFlagControllers.Clear();
     }
 
     private bool[,] GenerateArena()
@@ -286,6 +301,8 @@ public class ProceduralArenaGenerator : MonoBehaviour
     {
         spawnedBasePositions.Clear();
         spawnedBases.Clear();
+        spawnedFlags.Clear();
+        spawnedFlagControllers.Clear();
 
         RectInt[] regions = GetQuadrantRegions();
 
@@ -297,10 +314,26 @@ public class ProceduralArenaGenerator : MonoBehaviour
             if (!found)
                 return false;
 
-            GameObject spawned = Instantiate(billionaireBasePrefab, worldPos, Quaternion.identity);
-            spawned.GetComponent<BillionaireBase>().Initialize(team, 1);
-            spawnedBases.Add(spawned.GetComponent<BillionaireBase>());
+            GameObject billionaireBaseObj = Instantiate(billionaireBasePrefab, worldPos, Quaternion.identity);
+            BillionaireBase billionaireBase = billionaireBaseObj.GetComponent<BillionaireBase>();
+            billionaireBase.Initialize(team, 1);
+            spawnedBases.Add(billionaireBase);
             spawnedBasePositions.Add(worldPos);
+
+            if (team.Equals(FlagManager.Instance.playerTeam))
+                continue;
+
+            GameObject flagObj = Instantiate(flagPrefab, worldPos, Quaternion.identity);
+            Flag flag = flagObj.GetComponent<Flag>();
+            flag.Initialize(team);
+            FlagManager.Instance.AddFlagToList(flag, team);
+            spawnedFlags.Add(flag);
+
+            GameObject flagControllerObj = Instantiate(flagControllerPrefab, new Vector2(0, 0), Quaternion.identity);
+            TeamFlagController flagController = flagControllerObj.GetComponent<TeamFlagController>();
+            flagController.Initialize(flag, team, wallTilemap);
+            spawnedFlagControllers.Add(flagController);
+
             i++;
         }
 
