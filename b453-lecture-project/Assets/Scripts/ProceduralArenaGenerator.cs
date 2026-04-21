@@ -34,6 +34,7 @@ public class ProceduralArenaGenerator : MonoBehaviour
     private readonly List<BillionaireBase> spawnedBases = new List<BillionaireBase>();
     private readonly List<Flag> spawnedFlags = new List<Flag>();
     private readonly List<TeamFlagController> spawnedFlagControllers = new List<TeamFlagController>();
+
     private System.Random seed;
 
     private void Start()
@@ -56,7 +57,7 @@ public class ProceduralArenaGenerator : MonoBehaviour
         {
             ClearExisting();
 
-            // generate arena walls + obstacles
+            // generate arena walls
             walls = GenerateArena();
             if (walls == null)
                 continue;
@@ -117,7 +118,7 @@ public class ProceduralArenaGenerator : MonoBehaviour
             map[width - 1, y] = true;
         }
 
-        // loops through inner box, uses seed to determine fill
+        // loops through inner box, randomly assigns true based on fill percent
         for (int x = 1; x < width - 1; x++)
         {
             for (int y = 1; y < height - 1; y++)
@@ -243,7 +244,7 @@ public class ProceduralArenaGenerator : MonoBehaviour
             Vector2Int cell = queue.Dequeue();
             region.Add(cell);
 
-            // list of top, right, bottom, and left neighbor of the cell
+            // list of walkable neighbors from starting cell
             Vector2Int[] neighbours = new Vector2Int[]
             {
                 new Vector2Int(cell.x + 1, cell.y),
@@ -272,6 +273,7 @@ public class ProceduralArenaGenerator : MonoBehaviour
 
     private int CountWalkable(bool[,] map)
     {
+        // counts all false (blank) cells
         int count = 0;
         for (int x = 0; x < width; x++)
             for (int y = 0; y < height; y++)
@@ -285,6 +287,7 @@ public class ProceduralArenaGenerator : MonoBehaviour
     {
         wallTilemap.ClearAllTiles();
 
+        // loops through map and places tiles on each true cell
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -309,32 +312,36 @@ public class ProceduralArenaGenerator : MonoBehaviour
         int i = 0;
         foreach (Team team in (Team[])Enum.GetValues(typeof(Team)))
         {
+            // attempt to find a spot in region for team base
             Vector2 worldPos;
             bool found = TryFindBasePositionInRegion(regions[i], out worldPos);
             if (!found)
                 return false;
+            i++;
 
+            // spawn base for team
             GameObject billionaireBaseObj = Instantiate(billionaireBasePrefab, worldPos, Quaternion.identity);
             BillionaireBase billionaireBase = billionaireBaseObj.GetComponent<BillionaireBase>();
             billionaireBase.Initialize(team, 1);
             spawnedBases.Add(billionaireBase);
             spawnedBasePositions.Add(worldPos);
 
+            // if player team don't add flag / flag controller
             if (team.Equals(FlagManager.Instance.playerTeam))
                 continue;
 
+            // spawn flag on base
             GameObject flagObj = Instantiate(flagPrefab, worldPos, Quaternion.identity);
             Flag flag = flagObj.GetComponent<Flag>();
             flag.Initialize(team);
             FlagManager.Instance.AddFlagToList(flag, team);
             spawnedFlags.Add(flag);
 
+            // spawn controller for team
             GameObject flagControllerObj = Instantiate(flagControllerPrefab, new Vector2(0, 0), Quaternion.identity);
             TeamFlagController flagController = flagControllerObj.GetComponent<TeamFlagController>();
             flagController.Initialize(flag, team, wallTilemap);
             spawnedFlagControllers.Add(flagController);
-
-            i++;
         }
 
         return true;
@@ -361,16 +368,16 @@ public class ProceduralArenaGenerator : MonoBehaviour
         int attempts = 250;
         for (int i = 0; i < attempts; i++)
         {
-            // random coordinate
+            // random coordinate in region
             int x = seed.Next(region.xMin, region.xMax);
             int y = seed.Next(region.yMin, region.yMax);
 
-            // checks if random coordinate on tile or border continue
+            // if random coordinate on tile or border continue
             if (x < 1 || y < 1 || x >= width - 1 || y >= height - 1 || walls[x, y])
                 continue;
 
             // checks if random coordinate is far enough from walls and other bases
-            Vector2 candidate = CellCenterWorld(new Vector2Int(x, y));
+            Vector2 candidate = wallTilemap.GetCellCenterWorld(new Vector3Int(x, y, 0));
             if (!HasClearRing(candidate) || !FarEnoughFromOtherBases(candidate))
                 continue;
 
@@ -380,11 +387,6 @@ public class ProceduralArenaGenerator : MonoBehaviour
 
         worldPos = default;
         return false;
-    }
-
-    private Vector2 CellCenterWorld(Vector2Int cell)
-    {
-        return wallTilemap.GetCellCenterWorld(new Vector3Int(cell.x, cell.y, 0));
     }
 
     private bool HasClearRing(Vector2 center)
