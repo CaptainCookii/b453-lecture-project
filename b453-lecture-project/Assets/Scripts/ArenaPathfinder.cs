@@ -6,7 +6,10 @@ public static class ArenaPathfinder
 {
     private struct Node
     {
+        
         public Vector2Int cell;
+
+        // g = cost from start to this node, h = heuristic cost from this node to goal, f = g + h
         public int g;
         public int h;
         public int f => g + h;
@@ -23,12 +26,15 @@ public static class ArenaPathfinder
 
     public static List<Vector2Int> GetPath(Tilemap wallTilemap, Vector3 startWorld, Vector3 goalWorld)
     {
+        // Convert world positions to cell positions
         Vector3Int startCell3 = wallTilemap.WorldToCell(startWorld);
         Vector3Int goalCell3 = wallTilemap.WorldToCell(goalWorld);
 
+        // Use only x and y for pathfinding
         Vector2Int start = new Vector2Int(startCell3.x, startCell3.y);
         Vector2Int goal = new Vector2Int(goalCell3.x, goalCell3.y);
 
+        // converts start and goal to the nearest walkable cell
         start = FindNearestWalkableCell(wallTilemap, start);
         goal = FindNearestWalkableCell(wallTilemap, goal);
 
@@ -45,6 +51,7 @@ public static class ArenaPathfinder
         open.Add(new Node(start, 0, Heuristic(start, goal), start));
         gScore[start] = 0;
 
+        // walkable directions
         Vector2Int[] dirs = new Vector2Int[]
         {
             new Vector2Int(1, 0),
@@ -53,8 +60,10 @@ public static class ArenaPathfinder
             new Vector2Int(0, -1)
         };
 
+        // A* algorithm
         while (open.Count > 0)
         {
+            // find node in open with lowest cost
             int bestIndex = 0;
             for (int i = 1; i < open.Count; i++)
             {
@@ -70,6 +79,7 @@ public static class ArenaPathfinder
 
             closed.Add(current.cell);
 
+            // check neighbors and calculate costs 
             for (int i = 0; i < dirs.Length; i++)
             {
                 Vector2Int neighbor = current.cell + dirs[i];
@@ -77,7 +87,7 @@ public static class ArenaPathfinder
                 if (!bounds.Contains(new Vector3Int(neighbor.x, neighbor.y, 0)))
                     continue;
 
-                if (!IsWalkable(wallTilemap, neighbor))
+                if (wallTilemap.HasTile(new Vector3Int(neighbor.x, neighbor.y, 0)))
                     continue;
 
                 if (closed.Contains(neighbor))
@@ -85,6 +95,7 @@ public static class ArenaPathfinder
 
                 int tentativeG = current.g + 1;
 
+                // if this path to neighbor is better than any previous one, record it
                 if (!gScore.TryGetValue(neighbor, out int existingG) || tentativeG < existingG)
                 {
                     cameFrom[neighbor] = current.cell;
@@ -96,6 +107,7 @@ public static class ArenaPathfinder
             }
         }
 
+        Debug.LogWarning("No path found from " + start + " to " + goal);
         return null;
     }
 
@@ -115,12 +127,8 @@ public static class ArenaPathfinder
 
     private static int Heuristic(Vector2Int a, Vector2Int b)
     {
+        // Manhattan distance heuristic for grid-based pathfinding
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
-    }
-
-    private static bool IsWalkable(Tilemap wallTilemap, Vector2Int cell)
-    {
-        return !wallTilemap.HasTile(new Vector3Int(cell.x, cell.y, 0));
     }
 
     private static Vector2Int FindNearestWalkableCell(Tilemap wallTilemap, Vector2Int start)
@@ -134,6 +142,7 @@ public static class ArenaPathfinder
         queue.Enqueue(start);
         visited.Add(start);
 
+        // walkable directions
         Vector2Int[] dirs = new Vector2Int[]
         {
             new Vector2Int(1, 0),
@@ -143,7 +152,8 @@ public static class ArenaPathfinder
         };
 
         BoundsInt bounds = wallTilemap.cellBounds;
-
+        
+        // breadth-first search to find nearest walkable cell
         while (queue.Count > 0)
         {
             Vector2Int cell = queue.Dequeue();

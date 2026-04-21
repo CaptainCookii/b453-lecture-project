@@ -44,8 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eebd5b824ec97e046b3c3834ec96d3bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdTimeAtWaypoint: 3
-  waypointSkip: 3
-  repathInterval: 0.5
+  holdTimeAtWaypoint: 1.5
+  waypointSkip: 2
   targetSnapDistance: 0.5
-  initialHold: 8
+  initialHold: 7

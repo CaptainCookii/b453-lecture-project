@@ -2,12 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public enum Mode
-{
-    Offensive,
-    Defensive
-}
-
 public class TeamFlagController : MonoBehaviour
 {
     // reference variables
@@ -16,19 +10,15 @@ public class TeamFlagController : MonoBehaviour
     private Transform flagTransform;
 
     // navigation variables
-    [SerializeField] private float holdTimeAtWaypoint = 2f;
-    [SerializeField] private int waypointSkip = 2;
-    [SerializeField] private float repathInterval = 1f;
-    [SerializeField] private float targetSnapDistance = 0.5f;
-    [SerializeField] private float initialHold = 8f;
+    [SerializeField] private float holdTimeAtWaypoint;
+    [SerializeField] private int waypointSkip;
+    [SerializeField] private float targetSnapDistance;
+    [SerializeField] private float initialHold;
 
     private readonly List<Vector3> pathWaypoints = new List<Vector3>();
     private int waypointIndex;
     private float holdTimer;
-    private float repathTimer;
-    private float initialTimer;
     private Transform currentTarget;
-    private Mode currentMode;
 
     private bool initialized = false;
 
@@ -46,9 +36,11 @@ public class TeamFlagController : MonoBehaviour
         if (!initialized)
             return;
 
-        initialTimer += Time.deltaTime;
-        if (initialTimer <= initialHold)
+        if (initialHold >= 0)
+        {
+            initialHold -= Time.deltaTime;
             return;
+        }
 
         if (holdTimer > 0f)
         {
@@ -56,31 +48,23 @@ public class TeamFlagController : MonoBehaviour
             return;
         }
 
-        repathTimer += Time.deltaTime;
-
-        Transform desiredTarget = ResolveTarget(out Mode desiredMode);
-        if (desiredTarget != currentTarget || desiredMode != currentMode || repathTimer >= repathInterval)
+        Transform desiredTarget = ResolveTarget();
+        if (desiredTarget != currentTarget)
         {
             currentTarget = desiredTarget;
-            currentMode = desiredMode;
             RebuildPath();
-            repathTimer = 0f;
         }
 
         FollowPath();
     }
 
-    private Transform ResolveTarget(out Mode mode)
+    private Transform ResolveTarget()
     {
-        mode = Mode.Offensive;
-
         // if a home base is destroyed target home capture point
         CapturePoint ownCapturePoint = CapturePointRegistry.GetHomeCapturePoint(team);
         BillionaireBase aliveHomeBase = FindAliveBaseForTeam(team);
-
         if (aliveHomeBase == null && ownCapturePoint != null)
         {
-            mode = Mode.Defensive;
             return ownCapturePoint.transform;
         }
 
@@ -148,6 +132,7 @@ public class TeamFlagController : MonoBehaviour
         if (flagTransform == null || currentTarget == null || wallTilemap == null)
             return;
 
+        Debug.Log("Test");
         List<Vector2Int> rawPath = ArenaPathfinder.GetPath(
             wallTilemap,
             flagTransform.position,
@@ -155,8 +140,13 @@ public class TeamFlagController : MonoBehaviour
         );
 
         if (rawPath == null || rawPath.Count == 0)
+        {
+            Debug.Log(rawPath == null ? "Raw path is null" : "Raw path is empty");
             return;
+        }
+            
 
+        
         for (int i = 0; i < rawPath.Count; i += Mathf.Max(1, waypointSkip))
         {
             Vector2Int cell = rawPath[i];
@@ -171,6 +161,7 @@ public class TeamFlagController : MonoBehaviour
     {
         if (flagTransform == null || pathWaypoints.Count == 0)
             return;
+            
         if (waypointIndex >= pathWaypoints.Count)
             return;
 
