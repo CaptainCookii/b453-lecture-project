@@ -8275,7 +8275,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flagPrefab: {fileID: 1167158239879703934, guid: 126d0a4474c7d8d449e4fb61f5694eb9, type: 3}
-  playerTeam: 3
+  playerTeam: 2
   redFlags: []
   yellowFlags: []
   greenFlags: []
